@@ -40,7 +40,7 @@ public class thead_ex{
          *   p1.join();
          * 
          * }catch{
-         * sunthing happend
+         * something happend
          * }
          * 
          * 
