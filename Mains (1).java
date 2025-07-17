@@ -6,15 +6,15 @@ class person{
 
 }
 class employee extends person{
-    employee(){
-        super("john");
+    employee(String name){
+        super(name);
 
     }
 }
 public class Mains{
     public static void main(String[] args){
         
-        employee e1=new employee();
+        employee e1=new employee("name");
         
 
 
