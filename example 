@@ -1,0 +1,76 @@
+PlayerHealth.cs 
+using UnityEngine;
+using UnityEngine.UI;
+public class PlayerHealth : MonoBehaviour
+{
+ public int maxHealth = 100;
+ private int currentHealth;
+ public Text healthText;
+ void Start()
+ {
+ currentHealth = maxHealth;
+ UpdateHealthUI();
+ }
+ public void TakeDamage(int damage)
+ {
+ currentHealth -= damage;
+ if (currentHealth < 0)
+ currentHealth = 0;
+UpdateHealthUI();
+ if (currentHealth == 0)
+ {
+ Debug.Log("Player Died!");
+ // You could add respawn logic or restart scene here
+ }
+ }
+ private void UpdateHealthUI()
+ {
+ healthText.text = "Health: " + currentHealth;
+ }
+}
+Step 3: Create Enemy Script
+Create a new C# script called Enemy.cs and attach it to the Enemy object.
+Enemy.cs 
+using UnityEngine;
+public class Enemy : MonoBehaviour
+{
+ public float moveSpeed = 2f;
+ public Transform target; // Player reference
+ public int damage = 20;
+ private void Update()
+ {
+ if (target != null)
+ {
+ // Move towards the player
+ transform.LookAt(target);
+ transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * 
+Time.deltaTime);
+ }
+ }
+ private void OnTriggerEnter(Collider other)
+ {
+ if (other.CompareTag("Player"))
+ {
+ // Access PlayerHealth script and reduce health
+ PlayerHealth player = other.GetComponent<PlayerHealth>();
+ if (player != null)
+ {
+ player.TakeDamage(damage);
+ }
+ }
+ }
+}
+
+PlayerMovement.cs 
+using UnityEngine;
+public class PlayerMovement: MonoBehaviour
+{
+ public float speed = 5f;
+ void Update()
+ {
+ float moveX = Input.GetAxis("Horizontal");
+ float moveZ = Input.GetAxis("Vertical");
+ Vector3 move = new Vector3(moveX, 0, moveZ) * speed * Time.deltaTime;
+ transform.Translate(move, Space.World);
+ }
+}
