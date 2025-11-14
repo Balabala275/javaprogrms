@@ -1,0 +1,100 @@
+AIM: To create collectibles and a scoring system in Unity (C#).
+● Create collectible items (like coins).
+● Implement a scoring system.
+● Display the score on the UI.
+PROCEDURE
+Step 1: Set Up The Scene
+1. Open the Unity project.
+2. Create a 3D Object → Plane (for the ground).
+3. Create a 3D Object → Player (e.g., a Capsule).
+4. Create a 3D Object → Sphere (Collectible item).
+Assign tags:
+○ Select the player → Tag it as Player.
+○ Create a new tag called Collectible and assign it to the collectible spheres.
+Step 2: Add Collider and Rigidbody
+● Ensure the Player has a Rigidbody (for movement and collision).
+● Ensure the Collectible has a Collider (check Is Trigger) so it can detect overlaps.
+Step 3: Create the Score Manager Script
+Make a central script to handle the score.
+Create a new C# script: ScoreManager.cs
+Attach it to an empty GameObject named GameManager.
+ScoreManager.cs
+using UnityEngine;
+using UnityEngine.UI;
+public class ScoreManager : MonoBehaviour
+{
+ public static ScoreManager instance; // Singleton for easy access
+ public Text scoreText;
+ private int score = 0;
+ void Awake()
+ {
+ // Ensure only one instance exists
+ if (instance == null)
+ instance = this;
+else
+ Destroy(gameObject);
+ }
+ void Start()
+ {
+ UpdateScoreText();
+ }
+ public void AddScore(int points)
+ {
+ score += points;
+ UpdateScoreText();
+ }
+ private void UpdateScoreText()
+ {
+ scoreText.text = "Score: " + score;
+ }
+}
+Step 4: Create the Collectible Script
+Create a new C# script: Collectible.cs
+Attach it to each collectible item.
+Collectible.cs
+using UnityEngine;
+public class Collectible : MonoBehaviour
+{
+ public int points = 10; // Points for collecting
+ private void OnTriggerEnter(Collider other)
+ {
+ if (other.CompareTag("Player"))
+ {
+ // Add score
+ ScoreManager.instance.AddScore(points);
+ // Destroy collectible
+ Destroy(gameObject);
+ }
+ }
+}
+Step 5: Create the UI for Score Display
+1. Go to Hierarchy → UI → Text (Legacy) or UI → Text - TextMeshPro.
+2. Rename it to ScoreText.
+3. Position it at the top corner of the screen.
+4. In the GameManager (where the ScoreManager script is attached):
+○ Drag the ScoreText from the hierarchy into the Score Text field in the inspector.
+Step 6: Test the Game
+● Play the scene.
+● Move the player to collide with the collectibles.
+● The collectibles should disappear, and the score should update on the UI.
+Step 7 (Optional): Add Player Movement for Testing
+Create a script called PlayerMovement.cs:
+PlayerMovement.cs
+using UnityEngine;
+public class PlayerMovement : MonoBehaviour
+{
+ public float speed = 5f;
+ void Update()
+ {
+ float moveX = Input.GetAxis("Horizontal");
+ float moveZ = Input.GetAxis("Vertical");
+ Vector3 move = new Vector3(moveX, 0, moveZ) * speed * Time.deltaTime;
+ transform.Translate(move, Space.World);
+ }
+}
+Attach it to the Player object.
+RESULT
+When it plays:
+● The player moves with arrow keys or WASD.
+● When the player touches a collectible, it disappears.
+● The score increases and updates on the UI instantly.
